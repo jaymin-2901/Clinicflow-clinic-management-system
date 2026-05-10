@@ -1,0 +1,45 @@
+services:
+  - type: web
+    name: bansari-backend
+    runtime: docker
+    region: singapore
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: USE_PRODUCTION
+        value: true
+      - key: DB_HOST
+        fromDatabase:
+          name: bansari-clinic-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: bansari-clinic-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: bansari-clinic-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: bansari-clinic-db
+          property: user
+      - key: DB_PASS
+        fromDatabase:
+          name: bansari-clinic-db
+          property: password
+      - key: FRONTEND_URL
+        value: https://clinicflow-clinic-management-system.vercel.app
+      - key: ALLOWED_ORIGINS
+        value: https://clinicflow-clinic-management-system.vercel.app
+      - key: APP_ENV
+        value: production
+      - key: DEFAULT_COUNTRY_CODE
+        value: 91
+
+databases:
+  - name: bansari-clinic-db
+    databaseName: bansari_clinic
+    user: clinic_user
+    region: singapore
+    plan: free

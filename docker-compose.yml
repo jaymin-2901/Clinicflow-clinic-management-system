@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: bansari-backend
+    ports:
+      - "8000:80"
+    environment:
+      - USE_PRODUCTION=true
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=bansari_clinic
+      - DB_USER=clinic_user
+      - DB_PASS=clinic_password
+      - FRONTEND_URL=http://localhost:3000
+      - ALLOWED_ORIGINS=http://localhost:3000
+      - APP_ENV=development
+      - DEFAULT_COUNTRY_CODE=91
+    depends_on:
+      - db
+    volumes:
+      - ./backend-php:/var/www/html/backend-php
+      - ./public/uploads:/var/www/html/public/uploads
+    networks:
+      - clinic-network
+
+  db:
+    image: mysql:8.0
+    container_name: bansari-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=bansari_clinic
+      - MYSQL_USER=clinic_user
+      - MYSQL_PASSWORD=clinic_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d
+      - mysql_data:/var/lib/mysql
+    networks:
+      - clinic-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 10
+
+volumes:
+  mysql_data:
+
+networks:
+  clinic-network:
+    driver: bridge
