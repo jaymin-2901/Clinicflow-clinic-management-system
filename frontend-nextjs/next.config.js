@@ -40,10 +40,6 @@ const nextConfig = {
       },
     ],
   },
-  env: {
-    NEXT_PUBLIC_API_URL: '/api/clinic',
-    NEXT_PUBLIC_BACKEND_URL: 'http://localhost',
-  },
   async headers() {
     return [
       {
@@ -57,6 +53,10 @@ const nextConfig = {
     ];
   },
   async rewrites() {
+    if (process.env.NODE_ENV === 'production') {
+      return [];
+    }
+
     return [
       {
         source: '/api/clinic/:path*',
